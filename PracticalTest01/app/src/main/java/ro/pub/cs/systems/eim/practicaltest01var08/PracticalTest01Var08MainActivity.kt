@@ -3,6 +3,7 @@ package ro.pub.cs.systems.eim.practicaltest01var08
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
@@ -14,6 +15,7 @@ import androidx.core.view.WindowInsetsCompat
 
 class PracticalTest01Var08MainActivity : AppCompatActivity() {
     val buttonClickListener = ButtonClickListener()
+    var lastAnswer = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,14 +35,37 @@ class PracticalTest01Var08MainActivity : AppCompatActivity() {
         when (requestCode) {
             Constants.ANOTHER_ACTIVITY_REQUEST_CODE -> {
                 if (resultCode == RESULT_OK) {
+                    lastAnswer = 1
                     Toast.makeText(this@PracticalTest01Var08MainActivity, "Yes", Toast.LENGTH_SHORT).show()
                 } else if (resultCode == RESULT_CANCELED) {
+                    lastAnswer = 2
                     Toast.makeText(this@PracticalTest01Var08MainActivity, "No", Toast.LENGTH_SHORT).show()
 
                 }
             }
         }
     }
+
+
+    override fun onSaveInstanceState(savedInstanceState: Bundle) {
+        if (lastAnswer != 0) {
+            super.onSaveInstanceState(savedInstanceState)
+            savedInstanceState.putInt("lastAnswer", lastAnswer)
+        }
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        val restoreLastAnswer = savedInstanceState.getInt("lastAnswer")
+        lastAnswer = restoreLastAnswer
+            Toast.makeText(
+                this@PracticalTest01Var08MainActivity,
+                lastAnswer.toString(),
+                Toast.LENGTH_SHORT
+            ).show()
+            Log.d(Constants.LOG_TAG, "Last answer is $lastAnswer")
+    }
+
 
     inner class ButtonClickListener: View.OnClickListener {
         override fun onClick(v: View?) {
